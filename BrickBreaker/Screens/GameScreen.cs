@@ -33,16 +33,22 @@ namespace BrickBreaker
 
         // list of all blocks for current level
         List<Block> blocks = new List<Block>();
+        string[] powerUps = new string[5];
 
         // Brushes
         SolidBrush paddleBrush = new SolidBrush(Color.White);
         SolidBrush ballBrush = new SolidBrush(Color.White);
         SolidBrush textBrush = new SolidBrush(Color.White);
         SolidBrush blockBrush = new SolidBrush(Color.Red);
+        SolidBrush blockBrush2 = new SolidBrush(Color.Yellow);
+        SolidBrush blockBrush3 = new SolidBrush(Color.Green);
+        SolidBrush blockBrush4 = new SolidBrush(Color.Blue);
 
         //font for text
         Font textFont = new Font("Arial", 16);
 
+        public static Random randGen = new Random();
+        public static string powerImage;
         #endregion
 
         public GameScreen()
@@ -54,6 +60,7 @@ namespace BrickBreaker
 
         public void OnStart()
         {
+            string[] powerUps = { "BrickBreaker.Properties.Resources.Fire_flower", "BrickBreaker.Properties.Resources.Super_Star", "BrickBreaker.Properties.Resources.Double_Cherry", "BrickBreaker.Properties.Resources.Super_Mushroom", "BrickBreaker.Properties.Resources.Mini_Mushroom" };
             //set life counter
             lives = 3;
 
@@ -80,13 +87,14 @@ namespace BrickBreaker
 
             #region Creates blocks for generic level. Need to replace with code that loads levels.
 
-            //TODO - replace all the code in this region eventually with code that loads levels from xml files
+            //clears screen and loads level 1
 
             blocks.Clear();
 
+            
             int newX, newY, newHp, newColour, newType;
 
-            XmlReader reader = XmlReader.Create("Resources/level1.xml");
+            XmlReader reader = XmlReader.Create("Resources/level2.xml");
 
             while (reader.Read())
             {
@@ -111,7 +119,7 @@ namespace BrickBreaker
                     blocks.Add(s);
                 }
             }
-
+            
             #endregion
 
             // start the game engine loop
@@ -192,7 +200,14 @@ namespace BrickBreaker
             {
                 if (ball.BlockCollision(b))
                 {
-                    blocks.Remove(b);
+                    b.hp--;
+
+                    b.colour = b.hp;
+
+                    if (b.hp == 0)
+                    {
+                        blocks.Remove(b);
+                    }
 
                     if (blocks.Count == 0)
                     {
@@ -229,7 +244,30 @@ namespace BrickBreaker
             // Draws blocks
             foreach (Block b in blocks)
             {
-                e.Graphics.FillRectangle(blockBrush, b.x, b.y, b.width, b.height);
+                //e.Graphics.DrawImage(powerImage[0], 20, 20);
+                //e.Graphics.DrawImage(BrickBreaker.Properties.Resources.Fire_flower, 20, 20);
+                //e.Graphics.DrawImage(BrickBreaker.Properties.Resources.Super_Star, 20, 20);
+                //e.Graphics.DrawImage(BrickBreaker.Properties.Resources.Double_Cherry, 20, 20);
+                //e.Graphics.DrawImage(BrickBreaker.Properties.Resources.Super_Mushroom, 20, 20);
+                //e.Graphics.DrawImage(BrickBreaker.Properties.Resources.Mini_Mushroom, 20, 20);
+                
+                if (b.colour == 1)
+                {
+                    e.Graphics.FillRectangle(blockBrush, b.x, b.y, b.width, b.height);
+                }
+                if (b.colour == 2)
+                {
+                    e.Graphics.FillRectangle(blockBrush2, b.x, b.y, b.width, b.height);
+                }
+                if (b.colour == 3)
+                {
+                    e.Graphics.FillRectangle(blockBrush3, b.x, b.y, b.width, b.height);
+                }
+                if (b.colour == 4)
+                {
+                    e.Graphics.FillRectangle(blockBrush4, b.x, b.y, b.width, b.height);
+                }
+                
             }
 
             // Draws ball
@@ -237,5 +275,7 @@ namespace BrickBreaker
 
             e.Graphics.DrawString($"Lives left: {lives}", textFont, textBrush, 370, 500);
         }
+       
+
     }
 }
